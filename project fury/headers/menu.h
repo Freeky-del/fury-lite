@@ -6,8 +6,8 @@
 #include <chrono>			 
 							 
 namespace menu {			 
-	inline int width = 1920; //da cambiare
-	inline int height = 1080; 
+	inline int width = 0;
+	inline int height = 0; 
 
 	inline int index = 0;
 
@@ -52,4 +52,5 @@ namespace menu {
 	void BeginRender() noexcept;
 	void EndRender() noexcept;
 	void Render() noexcept;
+
 }
