@@ -86,7 +86,7 @@ namespace memory {
 		call_hook(&instr);
 
 		//if (!instr.base_address) {
-		//	MessageBoxA(0, "[-] Kernel did not return base address.", "Errore", MB_OK);
+		//	MessageBoxA(0, "[-] Nessuna base address restituita dal kernel.", "Errore", MB_OK);
 		//}
 
 		return instr.base_address;
@@ -145,7 +145,6 @@ namespace memory {
 
 		bool success = call_hook(&instr);
 
-		// Se vuoi fare logging in debug
 #ifdef _DEBUG
 		if (!success) {
 			std::cerr << "ReadArray failed: address=0x" << std::hex << address << ", size=" << std::dec << instructions.size << std::endl;
@@ -159,4 +158,5 @@ namespace memory {
 	inline bool write(UINT_PTR write_address, const S& value) {
 		return write_memory(write_address, &value, sizeof(S));
 	}
+
 }
