@@ -1,4 +1,6 @@
 #pragma once
+#include "../imgui/imgui.h"
+
 #include <vector>
 #include <string>
 
@@ -92,12 +94,17 @@ inline Vec3 operator*(float scalar, const Vec3& vec) {
 }
 
 typedef struct esp_entity {
-    Vec3 feet;
-    Vec3 head;
-    std::string name;
+    Vec3 origin;
+    Vec3 old_origin;
+
     uint8_t team;
     int32_t health;
     int32_t armor;
-    uintptr_t boneMatrix;
-    Vec3 old_origin;
-};
+
+    char name[32];
+
+    Vec3 bones[28];
+
+    ImVec2 boneScreen[28];
+    bool boneValid[28];
+} esp_entity;
