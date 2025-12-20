@@ -77,14 +77,15 @@ void draw::draw_corner_box(ImDrawList* draw_list, ImVec2 topLeft, ImVec2 bottomR
 void draw::draw_skeleton(ImDrawList* draw_list, const esp_entity& entity)
 {
 	for (const auto& connection : boneConnections) {
-		Vec3 b1 = memory::read<Vec3>(entity.boneMatrix + connection.bone1 * 32);
-		Vec3 b2 = memory::read<Vec3>(entity.boneMatrix + connection.bone2 * 32);
+		int b1_idx = connection.bone1;
+		int b2_idx = connection.bone2;
 
-		ImVec2 p1, p2;
-		if (wts(b1, globals::ViewMatrix, menu::width, menu::height, p1.x, p1.y) &&
-			wts(b2, globals::ViewMatrix, menu::width, menu::height, p2.x, p2.y)) {
+		if (entity.boneValid[b1_idx] && entity.boneValid[b2_idx]) {
+			ImVec2 p1 = entity.boneScreen[b1_idx];
+			ImVec2 p2 = entity.boneScreen[b2_idx];
+
 			draw_list->AddLine(p1, p2, getARGB(colors::esp_color), globals::esp::skeleton_thickness);
-			draw_list->AddCircleFilled(p2, globals::esp::skeleton_thickness  + 1.0f,  getARGB(colors::esp_color));
+			draw_list->AddCircleFilled(p2, globals::esp::skeleton_thickness + 1.0f, getARGB(colors::esp_color));
 		}
 	}
 }
@@ -103,11 +104,9 @@ void draw::draw_name(ImDrawList* draw_list, const std::string& name, ImVec2 topL
 	draw_list->AddText(name_pos, colors::white, name.c_str());
 }
 
-void draw::draw_health_bar(ImDrawList* draw_list, int32_t health, ImVec2 topLeft, ImVec2 bottomRight, float boxWidth)
+void draw::draw_health_bar(ImDrawList* draw_list, int32_t health, ImVec2 topLeft, ImVec2 bottomRight, float barWidth, float spacing)
 {
 	float percent = std::clamp(health / 100.0f, 0.0f, 1.0f);
-	float barWidth = std::clamp(boxWidth * 0.08f, 3.0f, 6.0f);
-	float spacing = std::clamp(barWidth * 0.03f, 2.0f, 4.0f);
 
 	float bar_x = topLeft.x - barWidth - spacing;
 	float bar_y_top = topLeft.y;
@@ -123,11 +122,9 @@ void draw::draw_health_bar(ImDrawList* draw_list, int32_t health, ImVec2 topLeft
 	);
 }
 
-void draw::draw_armor_bar(ImDrawList* draw_list, int32_t armor, ImVec2 topLeft, ImVec2 bottomRight, float boxHeight)
+void draw::draw_armor_bar(ImDrawList* draw_list, int32_t armor, ImVec2 topLeft, ImVec2 bottomRight, float barHeight, float spacing)
 {
 	float percent = std::clamp(armor / 100.0f, 0.0f, 1.0f);
-	float barHeight = std::clamp(boxHeight * 0.05f, 4.0f, 8.0f);
-	float spacing = std::clamp(boxHeight * 0.03f, 3.0f, 6.0f);
 
 	float bar_y = bottomRight.y + spacing;
 	float bar_x_left = topLeft.x;
@@ -148,13 +145,15 @@ void draw::draw_distance(ImDrawList* draw_list, Vec3 origin, const esp_entity& e
 	dst = dst / 100.0f;
 	int dst_int = static_cast<int>(std::trunc(dst));
 
-	draw_list->AddText(top_right, colors::white, std::string(std::to_string(dst_int) + "m").c_str());
+	char buf[16];
+	snprintf(buf, sizeof(buf), "%dm", dst_int);
+	draw_list->AddText(top_right, colors::white, buf);
 }
 
 void draw::draw_distance_line(ImDrawList* draw_list, const esp_entity& entity)
 {
 	ImVec2 origin;
-	Vec3 stomach = memory::read<Vec3>(entity.boneMatrix + bones::spine_1 * 32);
+	Vec3 stomach = entity.bones[bones::spine_1];
 
 	if (wts(stomach, globals::ViewMatrix, menu::width, menu::height, origin.x, origin.y)) {
 		if(globals::esp::distance_line_position::top) draw_list->AddLine(ImVec2(menu::width / 2.0f,  0), origin, getARGB(colors::esp_color), globals::esp::box_thickness);
@@ -167,13 +166,19 @@ void draw::draw_entity_esp(ImDrawList* draw_list, const esp_entity& entity)
 {
 	ImVec2 feet, head;
 
-	if (!wts(entity.feet, globals::ViewMatrix, menu::width, menu::height, feet.x, feet.y) ||
-		!wts(entity.head, globals::ViewMatrix, menu::width, menu::height, head.x, head.y)) 
+	if (!wts(entity.bones[bones::left_feet], globals::ViewMatrix, menu::width, menu::height, feet.x, feet.y) ||
+		!wts(entity.bones[bones::head], globals::ViewMatrix, menu::width, menu::height, head.x, head.y))
 		return;
 
 	ImVec2 box;
 	box.y = static_cast<float>(feet.y - head.y);
 	box.x = box.y / 2.2f;
+
+	float barWidth_health = std::clamp(box.x * 0.08f, 3.0f, 6.0f);
+	float spacing_health = std::clamp(box.x * 0.03f, 2.0f, 4.0f);
+
+	float barHeight_armor = std::clamp(box.y * 0.05f, 4.0f, 8.0f);
+	float spacing_armor = std::clamp(box.y * 0.03f, 3.0f, 6.0f);
 
 	ImVec2 top_left(head.x - box.x / 2.0f, head.y), bottom_right(head.x + box.x / 2.0f, feet.y);
 	ImVec2 top_right(head.x + box.x / 2.0f, head.y);
@@ -183,8 +188,8 @@ void draw::draw_entity_esp(ImDrawList* draw_list, const esp_entity& entity)
 	if (globals::esp::skeleton_esp) draw_skeleton(draw_list, entity);
 	if (globals::esp::head_circle) draw_head_circle(draw_list, head, box.y);
 	if (globals::esp::name_esp) draw_name(draw_list, entity.name, top_left);
-	if (globals::esp::health_bar) draw_health_bar(draw_list, entity.health, top_left, bottom_right, box.x);
-	if (globals::esp::armor_bar) draw_armor_bar(draw_list, entity.armor, top_left, bottom_right, box.y);
+	if (globals::esp::health_bar) draw_health_bar(draw_list, entity.health, top_left, bottom_right, barWidth_health, spacing_health);
+	if (globals::esp::armor_bar) draw_armor_bar(draw_list, entity.armor, top_left, bottom_right, barHeight_armor, spacing_armor);
 	if (globals::esp::distance) draw_distance(draw_list, globals::old_origin, entity, top_right);
 	if (globals::esp::distance_line) draw_distance_line(draw_list, entity);
 }
@@ -194,13 +199,24 @@ void draw::draw_esp() noexcept
 	if (!globals::enableEsp || !globals::LocalPlayerPawn) return;
 
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
-	uint8_t local_team = memory::read<uint8_t>(globals::LocalPlayerPawn + offsets::client_dll::C_BaseEntity::m_iTeamNum);
+
 	memory::read_array<float>(globals::client + offsets::client_dll::dwViewMatrix, globals::ViewMatrix, 16);
 
 	std::lock_guard<std::mutex> lock(globals::esp_mutex);
 
 	for (auto& entity : globals::g_espEntityRender) {
-		if (globals::team_checker && entity.team == local_team) continue;
+		if (globals::team_checker && entity.team == globals::local_team) continue;
+
+		for (int i = 0; i < 28; ++i) {
+			entity.boneValid[i] = draw::wts(
+				entity.bones[i],
+				globals::ViewMatrix,
+				menu::width,
+				menu::height,
+				entity.boneScreen[i].x,
+				entity.boneScreen[i].y
+			);
+		}
 
 		draw_entity_esp(draw_list, entity);
 	}
