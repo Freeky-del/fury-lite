@@ -301,7 +301,7 @@ void menu::CreateHWindow(LPCWSTR windowName, LPCWSTR className) noexcept {
 
 	SetLayeredWindowAttributes(window, RGB(0, 0, 0), 255, LWA_COLORKEY);
 
-	sd.BufferDesc.RefreshRate.Numerator = 144U;
+	sd.BufferDesc.RefreshRate.Numerator = 60U;
 	sd.BufferDesc.RefreshRate.Denominator = 1U;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	sd.SampleDesc.Count = 1U;
@@ -441,12 +441,12 @@ void menu::EndRender() noexcept {
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-	swap_chain->Present(0U, 0U); // vsync OFF
+	swap_chain->Present(1U, 0U); // vsync ON
 }
 
 void menu::Render() noexcept {
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
-	draw_list->AddText(ImVec2(0, 0), ImU32(ImColor(145, 0, 0, 255)), "Fury Lite - v1.0.1");
+	draw_list->AddText(ImVec2(0, 0), ImU32(ImColor(145, 0, 0, 255)), "Fury Lite - v1.0.2");
 
 	static Animator animator{ 255, false, 4.5f };
 	AnimateContent(animator);
