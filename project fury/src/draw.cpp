@@ -202,8 +202,6 @@ void draw::draw_esp() noexcept
 
 	memory::read_array<float>(globals::client + offsets::client_dll::dwViewMatrix, globals::ViewMatrix, 16);
 
-	std::lock_guard<std::mutex> lock(globals::esp_mutex);
-
 	for (auto& entity : globals::g_espEntityRender) {
 		if (globals::team_checker && entity.team == globals::local_team) continue;
 
