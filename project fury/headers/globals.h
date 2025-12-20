@@ -14,6 +14,7 @@ namespace globals {
 	inline uintptr_t EntityList = NULL;
 	inline float ViewMatrix[16];
 	inline Vec3 old_origin;
+	inline uint8_t local_team;
 
 	inline bool team_checker = false;
 
