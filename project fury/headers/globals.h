@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <Windows.h>
-#include <mutex>
 
 namespace globals {
 	inline std::uintptr_t client = 0;
@@ -18,7 +17,6 @@ namespace globals {
 
 	inline bool team_checker = false;
 
-	inline std::mutex esp_mutex;
 	inline std::vector<esp_entity> g_espEntityUpdate;
 	inline std::vector<esp_entity> g_espEntityRender;
 
