@@ -218,14 +218,14 @@ void menu::UpdateFade()
 	lastTime = now;
 
 	if (fadingIn) {
-		alpha += delta * 3.0f; // velocit‡ fade-in
+		alpha += delta * 3.0f; // velocit√† fade-in
 		if (alpha >= 1.0f) {
 			alpha = 1.0f;
 			fadingIn = false;
 		}
 	}
 	else if (fadingOut) {
-		alpha -= delta * 3.0f; // velocit‡ fade-out
+		alpha -= delta * 3.0f; // velocit√† fade-out
 		if (alpha <= 0.0f) {
 			alpha = 0.0f;
 			fadingOut = false;
@@ -446,7 +446,7 @@ void menu::EndRender() noexcept {
 
 void menu::Render() noexcept {
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
-	draw_list->AddText(ImVec2(0, 0), ImU32(ImColor(145, 0, 0, 255)), "Fury Lite - v1.0.0");
+	draw_list->AddText(ImVec2(0, 0), ImU32(ImColor(145, 0, 0, 255)), "Fury Lite - v1.0.1");
 
 	static Animator animator{ 255, false, 4.5f };
 	AnimateContent(animator);
