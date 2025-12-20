@@ -1,10 +1,13 @@
 #include "../headers/hacks.h"
 
 void hacks::VisualsThread() noexcept {
+	globals::g_espEntityUpdate.reserve(64);
+
 	while (true) {
 		globals::LocalPlayerPawn = memory::read<uintptr_t>(globals::client + offsets::client_dll::dwLocalPlayerPawn);
 		globals::EntityList = memory::read<uintptr_t>(globals::client + offsets::client_dll::dwEntityList);
 		globals::old_origin = memory::read<Vec3>(globals::LocalPlayerPawn + offsets::client_dll::CBasePlayerPawn::m_vOldOrigin);
+		globals::local_team = memory::read<uint8_t>(globals::LocalPlayerPawn + offsets::client_dll::C_BaseEntity::m_iTeamNum);
 
 		if (globals::enableEsp) {
 			globals::g_espEntityUpdate.clear();
@@ -15,8 +18,6 @@ void hacks::VisualsThread() noexcept {
 					uintptr_t currentController = memory::read<uintptr_t>(listEntry + 0x70 * (i & 0x1FF));
 
 					if (currentController) {
-						char name[128] = {};
-						memory::read_array<char>(currentController + offsets::client_dll::CBasePlayerController::m_iszPlayerName, name, sizeof(name));
 
 						int pawnHandle = memory::read<int>(currentController + offsets::client_dll::CCSPlayerController::m_hPlayerPawn);
 
@@ -29,26 +30,33 @@ void hacks::VisualsThread() noexcept {
 								if (currentPawn == globals::LocalPlayerPawn) continue;
 
 								if (currentPawn) {
-									uintptr_t sceneNode = memory::read<uintptr_t>(currentPawn + offsets::client_dll::C_BaseEntity::m_pGameSceneNode);
-									uint8_t team = memory::read<uint8_t>(currentPawn + offsets::client_dll::C_BaseEntity::m_iTeamNum);
 									int32_t health = memory::read<int32_t>(currentPawn + offsets::client_dll::C_BaseEntity::m_iHealth);
-									int32_t armor = memory::read<int32_t>(currentPawn + offsets::client_dll::C_CSPlayerPawn::m_ArmorValue);
-									Vec3 old_origin = memory::read<Vec3>(currentPawn + offsets::client_dll::CBasePlayerPawn::m_vOldOrigin);
-
 									if (health <= 0 || health >= 1337) continue;
 
-									Vec3 viewOffset = memory::read<Vec3>(currentPawn + offsets::client_dll::C_BaseModelEntity::m_vecViewOffset);
-									Vec3 vecViewOrigin = memory::read<Vec3>(sceneNode + offsets::client_dll::CGameSceneNode::m_vecOrigin);
+									esp_entity ent{};
 
-									uintptr_t boneMatrix = memory::read<uintptr_t>(sceneNode + offsets::client_dll::CSkeletonInstance::m_modelState + 0x80);
+									ent.health = health;
+									ent.team = memory::read<uint8_t>(currentPawn + offsets::client_dll::C_BaseEntity::m_iTeamNum);
+									ent.armor = memory::read<int32_t>(currentPawn + offsets::client_dll::C_CSPlayerPawn::m_ArmorValue);
+									ent.old_origin = memory::read<Vec3>(currentPawn + offsets::client_dll::CBasePlayerPawn::m_vOldOrigin);
 
-									if (boneMatrix) {
-										Vec3 head = memory::read<Vec3>(boneMatrix + bones::head * 32);
+									uintptr_t sceneNode = memory::read<uintptr_t>(currentPawn + offsets::client_dll::C_BaseEntity::m_pGameSceneNode);
 
-										globals::g_espEntityUpdate.emplace_back(esp_entity{
-											vecViewOrigin, head, std::string(name), team, health, armor, boneMatrix, old_origin
+									if (sceneNode) {
+										ent.origin = memory::read<Vec3>(sceneNode + offsets::client_dll::CGameSceneNode::m_vecOrigin);
+										uintptr_t boneMatrix = memory::read<uintptr_t>(sceneNode + offsets::client_dll::CSkeletonInstance::m_modelState + 0x80);
+
+										if (boneMatrix) {
+											for (int b = 0; b < 28; ++b) {
+												ent.bones[b] = memory::read<Vec3>(boneMatrix + b * 32);
+
+												ent.boneValid[b] = false;
+												ent.boneScreen[b] = ImVec2(0.0f, 0.0f);
 											}
-										);
+
+											memory::read_array<char>(currentController + offsets::client_dll::CBasePlayerController::m_iszPlayerName, ent.name, sizeof(ent.name));
+											globals::g_espEntityUpdate.emplace_back(ent);
+										}
 									}
 								}
 							}
