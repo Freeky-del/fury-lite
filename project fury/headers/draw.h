@@ -19,8 +19,8 @@ namespace draw {
 	void draw_skeleton(ImDrawList* draw_list, const esp_entity& entity);
 	void draw_head_circle(ImDrawList* draw_list, ImVec2 head, float BoxHeigth);
 	void draw_name(ImDrawList* draw_list, const std::string& name, ImVec2 topLeft);
-	void draw_health_bar(ImDrawList* draw_list, int32_t health, ImVec2 topLeft, ImVec2 bottomRight, float boxWidth);
-	void draw_armor_bar(ImDrawList* draw_list, int32_t armor, ImVec2 topLeft, ImVec2 bottomRight, float boxHeight);
+	void draw_health_bar(ImDrawList* draw_list, int32_t health, ImVec2 topLeft, ImVec2 bottomRight, float barWidth, float spacing);
+	void draw_armor_bar(ImDrawList* draw_list, int32_t armor, ImVec2 topLeft, ImVec2 bottomRight, float barHeight, float spacing);
 	void draw_distance(ImDrawList* draw_list, Vec3 origin, const esp_entity& entity, ImVec2 top_right);
 	void draw_distance_line(ImDrawList* draw_list, const esp_entity& entity);
 	void draw_entity_esp(ImDrawList* draw_list, const esp_entity& entity);
