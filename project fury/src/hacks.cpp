@@ -65,7 +65,6 @@ void hacks::VisualsThread() noexcept {
 				}
 			}
 
-			std::lock_guard<std::mutex> lock(globals::esp_mutex);
 			std::swap(globals::g_espEntityRender, globals::g_espEntityUpdate);
 		}
 	}
