@@ -38,7 +38,7 @@
 6. Open _**Fury Lite**_
 7. Enjoy
 > [!Note]
-> Once successfully opened, in the top-right corner of the screen there will be write _**Fury Lite - v1.0.0**_
+> Once successfully opened, in the top-left corner of the screen there will be write _**Fury Lite - v1.0.0**_
 
 > [!Important]
 > - Press INS to show/hide the menu
