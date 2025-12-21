@@ -446,7 +446,7 @@ void menu::EndRender() noexcept {
 
 void menu::Render() noexcept {
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
-	draw_list->AddText(ImVec2(0, 0), ImU32(ImColor(145, 0, 0, 255)), "Fury Lite - v1.1.0");
+	draw_list->AddText(ImVec2(0, 0), ImU32(ImColor(145, 0, 0, 255)), "Fury Lite - v2.0.0");
 
 	ImVec2 bottom_left_screen(0, menu::height - 300.0f);
 	ImColor outline = ImColor(1, 0, 0, 255);
@@ -468,6 +468,10 @@ void menu::Render() noexcept {
 		if (globals::esp::distance) draw_list->AddText(ImVec2(bottom_left_screen.x, bottom_left_screen.y + 140.0f), colors::green, "Distance");
 		if (globals::esp::distance_line) draw_list->AddText(ImVec2(bottom_left_screen.x, bottom_left_screen.y + 160.0f), colors::green, "Distance Line");
 		if (globals::team_checker) draw_list->AddText(ImVec2(bottom_left_screen.x, bottom_left_screen.y + 180.0f), colors::green, "Team Checker");
+	}
+
+	if (globals::enable_bomb_info) {
+		draw::draw_bomb_info();
 	}
 
 	UpdateFade();
@@ -508,8 +512,8 @@ void menu::Render() noexcept {
 	ImGui::PopFont();
 
 	CenterButtons(
-		{ ICON_FA_EYE" Visuals"},
-		{ 0 },
+		{ ICON_FA_EYE" Visuals", ICON_FA_BOMB" Bomb Info"},
+		{ 0, 1 },
 		index
 	);
 
@@ -598,6 +602,15 @@ void menu::Render() noexcept {
 			globals::esp::box_esp = false;
 		}
 		break;
+	case 1:
+		CustomCheckBox("Enable", &globals::enable_bomb_info);
+		ImGui::SameLine();
+		ImGui::SetCursorPos(ImVec2(200.0f, 0));
+		CustomCheckBox("Site", &globals::bomb::site);
+		CustomCheckBox("Status", &globals::bomb::status);
+		ImGui::SameLine();
+		ImGui::SetCursorPos(ImVec2(200.0f, 25.0f));
+		CustomCheckBox("Detonate Timer", &globals::bomb::timer);
 	}
 
 	ImGui::EndChild();

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <chrono>
 
 typedef struct Vec4 {
     float r, g, b, a;
@@ -108,3 +109,18 @@ typedef struct esp_entity {
     ImVec2 boneScreen[28];
     bool boneValid[28];
 } esp_entity;
+
+typedef struct bomb_entity {
+    bool arming;
+    bool planted;
+    bool ticking;
+    
+    int32_t site;
+
+    bool cant_be_defused;
+    bool exploded;
+    bool defused;
+
+    float timer_length;
+    float time_left = 0.0f;
+} bomb_entity;

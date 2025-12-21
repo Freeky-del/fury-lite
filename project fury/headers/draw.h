@@ -25,4 +25,9 @@ namespace draw {
 	void draw_distance_line(ImDrawList* draw_list, const esp_entity& entity);
 	void draw_entity_esp(ImDrawList* draw_list, const esp_entity& entity);
 	void draw_esp() noexcept;
+
+	void draw_site(ImDrawList* draw_list, const bomb_entity& bomb);
+	void draw_status(ImDrawList* draw_list, const bomb_entity& bomb);
+	void draw_timer(ImDrawList* draw_list, bomb_entity& bomb);
+	void draw_bomb_info() noexcept;
 }

@@ -7,6 +7,8 @@ namespace offsets {
 		constexpr std::ptrdiff_t dwLocalPlayerController = 0x1E1DC18;
 		constexpr std::ptrdiff_t dwLocalPlayerPawn = 0x1BEEF28;
 		constexpr std::ptrdiff_t dwViewMatrix = 0x1E323D0;
+		constexpr std::ptrdiff_t dwPlantedC4 = 0x1E36BE8;
+		constexpr std::ptrdiff_t dwWeaponC4 = 0x1DCF190;
 
 		namespace CBasePlayerController {
 			constexpr std::ptrdiff_t m_iszPlayerName = 0x6E8; // char[128]
@@ -40,6 +42,20 @@ namespace offsets {
 
 		namespace CSkeletonInstance {
 			constexpr std::ptrdiff_t m_modelState = 0x190; // CModelState
+		}
+		
+		namespace C_C4 {
+			constexpr std::ptrdiff_t m_bStartedArming = 0x1F88; // bool
+			constexpr std::ptrdiff_t m_bBombPlanted = 0x1FBB; // bool
+		}
+
+		namespace C_PlantedC4 {
+			constexpr std::ptrdiff_t m_bBombTicking = 0x1160; // bool
+			constexpr std::ptrdiff_t m_nBombSite = 0x1164; // int32
+			constexpr std::ptrdiff_t m_bCannotBeDefused = 0x1194; // bool
+			constexpr std::ptrdiff_t m_bHasExploded = 0x1195; // bool
+			constexpr std::ptrdiff_t m_bBombDefused = 0x11B4; // bool
+			constexpr std::ptrdiff_t m_flTimerLength = 0x1198; // float32
 		}
 	}
 

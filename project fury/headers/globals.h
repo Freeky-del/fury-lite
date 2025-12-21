@@ -19,6 +19,7 @@ namespace globals {
 
 	inline std::vector<esp_entity> g_espEntityUpdate;
 	inline std::vector<esp_entity> g_espEntityRender;
+	inline std::vector<bomb_entity> g_bombEntityUpdate;
 
 	inline bool enableEsp = false;
 	namespace esp {
@@ -41,5 +42,12 @@ namespace globals {
 			inline bool center = false;
 			inline bool bottom = false;
 		}
+	}
+
+	inline bool enable_bomb_info = false;
+	namespace bomb {
+		inline bool site = false;
+		inline bool status = false;
+		inline bool timer = false;
 	}
 }

@@ -67,5 +67,39 @@ void hacks::VisualsThread() noexcept {
 
 			std::swap(globals::g_espEntityRender, globals::g_espEntityUpdate);
 		}
+
+		if (globals::enable_bomb_info) {
+			globals::g_bombEntityUpdate.clear();
+			uintptr_t planted_c4_ptr = memory::read<uintptr_t>(globals::client + offsets::client_dll::dwPlantedC4);
+			uintptr_t planted_c4 = memory::read<uintptr_t>(planted_c4_ptr);
+			uintptr_t weapon_c4_ptr = memory::read<uintptr_t>(globals::client + offsets::client_dll::dwWeaponC4);
+			uintptr_t weapon_c4 = memory::read<uintptr_t>(weapon_c4_ptr);
+			
+			bomb_entity ent = {};
+
+			if (weapon_c4) {
+				bool arming = memory::read<bool>(weapon_c4 + offsets::client_dll::C_C4::m_bStartedArming);
+				bool planted = memory::read<bool>(weapon_c4 + offsets::client_dll::C_C4::m_bBombPlanted);
+
+				ent.arming = arming;
+				ent.planted = planted;
+			}
+
+			if (planted_c4) {
+				bool ticking = memory::read<bool>(planted_c4 + offsets::client_dll::C_PlantedC4::m_bBombTicking);
+				int32_t site = memory::read<int32_t>(planted_c4 + offsets::client_dll::C_PlantedC4::m_nBombSite);
+				bool exploded = memory::read<bool>(planted_c4 + offsets::client_dll::C_PlantedC4::m_bHasExploded);
+				bool defused = memory::read<bool>(planted_c4 + offsets::client_dll::C_PlantedC4::m_bBombDefused);
+				float timer_length = memory::read<float>(planted_c4 + offsets::client_dll::C_PlantedC4::m_flTimerLength);
+
+				ent.ticking = ticking;
+				ent.site = site;
+				ent.exploded = exploded;
+				ent.defused = defused;
+				ent.timer_length = timer_length;
+			}
+
+			globals::g_bombEntityUpdate.emplace_back(ent);
+		}
 	}
 }

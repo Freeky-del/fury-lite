@@ -219,3 +219,86 @@ void draw::draw_esp() noexcept
 		draw_entity_esp(draw_list, entity);
 	}
 }
+
+void draw::draw_site(ImDrawList* draw_list, const bomb_entity& bomb)
+{
+	const char* site[] = { "A", "B", "C" };
+	const char site_word[] = "Site: ";
+	
+	draw_list->AddText(ImVec2(0, menu::height - 500.0f), colors::white, site_word);
+
+	if (bomb.planted && bomb.ticking) {
+		draw_list->AddText(ImVec2(35.0f, menu::height - 500.0f), colors::white, site[bomb.site]);
+	}
+}
+
+void draw::draw_status(ImDrawList* draw_list, const bomb_entity& bomb)
+{
+	if (bomb.arming && bomb.planted == false) {
+		draw_list->AddText(ImVec2(0, menu::height - 480.0f), colors::red, "Planting");
+	}
+
+	if (bomb.planted && bomb.ticking) {
+		draw_list->AddText(ImVec2(0, menu::height - 480.0f), colors::red, "Planted");
+		draw_list->AddText(ImVec2(0, menu::height - 460.0f), colors::red, "Ticking");
+	}
+
+	if (bomb.cant_be_defused) {
+		draw_list->AddText(ImVec2(0, menu::height - 480.f), colors::red, "Bomb cant be Defused");
+	}
+
+	if (bomb.defused) {
+		draw_list->AddText(ImVec2(0, menu::height - 460.0f), colors::green, "Bomb Defused");
+	}
+
+	if (bomb.exploded) {
+		draw_list->AddText(ImVec2(0, menu::height - 460.0f), colors::red, "Bomb Exploded");
+	}
+}
+
+void draw::draw_timer(ImDrawList* draw_list, bomb_entity& bomb)
+{
+	static std::chrono::steady_clock::time_point bomb_clock;
+
+	if (bomb.planted && bomb.ticking) {
+
+		static bool timer_started = false;
+		if (!timer_started) {
+			bomb_clock = std::chrono::steady_clock::now();
+			timer_started = true;
+		}
+
+		auto now = std::chrono::steady_clock::now();
+		float time_elapsed = std::chrono::duration<float>(now - bomb_clock).count();
+		bomb.time_left = bomb.timer_length - time_elapsed;
+		if (bomb.time_left < 0.0f) bomb.time_left = 0.0f;
+
+		char buf[16];
+		if (bomb.time_left > 10.0f) {
+			snprintf(buf, sizeof(buf), "%ds", static_cast<int>(bomb.time_left));
+		}
+		else {
+			snprintf(buf, sizeof(buf), "%.2fs", bomb.time_left);
+		}
+
+		draw_list->AddText(ImVec2(0, menu::height - 440.0f), colors::red, buf);
+	}
+	else {
+		bomb.time_left = bomb.timer_length;
+		static bool timer_started = false;
+		timer_started = false;
+	}
+}
+
+void draw::draw_bomb_info() noexcept
+{
+	if (!globals::enable_bomb_info) return;
+
+	ImDrawList* draw_list = ImGui::GetForegroundDrawList();
+
+	bomb_entity bomb = globals::g_bombEntityUpdate[0];
+
+	if (globals::bomb::site) draw_site(draw_list, bomb);
+	if (globals::bomb::status) draw_status(draw_list, bomb);
+	if (globals::bomb::timer) draw_timer(draw_list, bomb);
+}
