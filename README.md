@@ -11,6 +11,7 @@
    - Corner Esp
    - Team Checker
    - Skeleton Esp
+   - Joints
    - Head Circle
    - Player Name
    - Player Health Bar
