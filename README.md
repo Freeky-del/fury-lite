@@ -26,7 +26,7 @@
 2. Extract all files from the `.zip`
 3. Open the `.sln`
 4. Make sure to set the project to `Release x64`
-5. Build it by pressing `Crt + B`
+5. Build it by pressing `Ctrl + B`
 6. Read [how to use](#how-to-use)
 
 # How to use
