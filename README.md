@@ -21,6 +21,10 @@
    - Esp Color Customization
    - Esp Thickness Customization
    - Skeleton Thickness Customization
+2. Bomb Info
+   - Site
+   - Status (Planting, Planted, Ticking, Exploded, Defused)
+   - Detonate Timer
 
 # Installation
 1. Download the [repository](https://github.com/Freeky-del/fury-lite/archive/refs/heads/main.zip) as a `.zip`
