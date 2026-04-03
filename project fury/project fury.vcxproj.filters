@@ -51,6 +51,9 @@
     <ClCompile Include="src\draw.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="src\updater.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\memory.h">
@@ -111,6 +114,9 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="headers\draw.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\updater.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>
