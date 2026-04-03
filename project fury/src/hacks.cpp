@@ -22,6 +22,7 @@ void hacks::VisualsThread() noexcept {
 						int pawnHandle = memory::read<int>(currentController + offsets::client_dll::CCSPlayerController::m_hPlayerPawn);
 
 						if (pawnHandle != 0) {
+
 							uintptr_t listEntry2 = memory::read<uintptr_t>(globals::EntityList + 0x8 * ((pawnHandle & 0x7FFF) >> 9) + 0x10);
 
 							if (listEntry2) {

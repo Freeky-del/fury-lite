@@ -2,8 +2,16 @@
 #include "../headers/menu.h"
 #include "../headers/hacks.h"
 #include "../headers/offsets.h"
+#include "../headers/updater.h";
 
 int __stdcall wWinMain(HINSTANCE instance, HINSTANCE previousInstance, PWSTR arguments, int commandShow) {
+	//AllocConsole();
+
+	//FILE* fp;
+
+	//freopen_s(&fp, "CONOUT$", "w", stdout); // output
+	//freopen_s(&fp, "CONIN$", "r", stdin);   // input
+	//freopen_s(&fp, "CONOUT$", "w", stderr); // errori
 	while (!globals::pid || !globals::client || !globals::engine) {
 		globals::pid = memory::get_process_id("cs2.exe");
 		
@@ -19,6 +27,13 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE previousInstance, PWSTR arg
 			MessageBoxA(0, "client.dll and engine2.dll not found, click \"OK\" to retry", "OK", 0);
 		}
 	}
+
+	/*while (globals::updated == false) {
+		bool res = fetch_offsets();
+		if (res) {
+			globals::updated = true;
+		}
+	}*/
 
 	menu::width = memory::read<int>(globals::engine + offsets::engine2_dll::dwWindowWidth);
 	menu::height = memory::read<int>(globals::engine + offsets::engine2_dll::dwWindowHeight);

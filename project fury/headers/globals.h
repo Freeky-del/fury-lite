@@ -8,6 +8,7 @@ namespace globals {
 	inline std::uintptr_t client = 0;
 	inline std::uintptr_t engine = 0;
 	inline std::uint32_t pid = 0;
+	inline bool updated = false;
 
 	inline uintptr_t LocalPlayerPawn = NULL;
 	inline uintptr_t EntityList = NULL;
