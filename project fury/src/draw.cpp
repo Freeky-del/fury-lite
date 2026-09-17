@@ -3,22 +3,22 @@
 #include <algorithm>
 
 BoneConnection boneConnections[] = {
-	BoneConnection(6, 5),
-	BoneConnection(5, 4),
-	BoneConnection(4, 0),
-	BoneConnection(4, 8),
-	BoneConnection(8, 9),
-	BoneConnection(9, 11),
+	BoneConnection(7, 6),
+	BoneConnection(6, 4),
+	BoneConnection(4, 1),
+	BoneConnection(4, 9),
+	BoneConnection(9, 10),
+	BoneConnection(10, 11),
 	BoneConnection(4, 13),
 	BoneConnection(13, 14),
-	BoneConnection(14, 16),
+	BoneConnection(14, 15),
 	BoneConnection(4, 2),
-	BoneConnection(0, 22),
-	BoneConnection(0, 25),
-	BoneConnection(22, 23),
-	BoneConnection(23, 24),
-	BoneConnection(25, 26),
-	BoneConnection(26, 27)
+	BoneConnection(1, 17),
+	BoneConnection(1, 20),
+	BoneConnection(17, 18),
+	BoneConnection(18, 19),
+	BoneConnection(20, 21),
+	BoneConnection(21, 22)
 };
 
 float draw::distance_2d(ImVec2 origin, ImVec2 dest) {
@@ -205,7 +205,7 @@ void draw::draw_esp() noexcept
 	for (auto& entity : globals::g_espEntityRender) {
 		if (globals::team_checker && entity.team == globals::local_team) continue;
 
-		for (int i = 0; i < 28; ++i) {
+		for (int i = 0; i < 30; ++i) {
 			entity.boneValid[i] = draw::wts(
 				entity.bones[i],
 				globals::ViewMatrix,
@@ -234,17 +234,16 @@ void draw::draw_site(ImDrawList* draw_list, const bomb_entity& bomb)
 
 void draw::draw_status(ImDrawList* draw_list, const bomb_entity& bomb)
 {
-	if (bomb.arming && bomb.planted == false) {
+	if (bomb.arming == true) {
 		draw_list->AddText(ImVec2(0, menu::height - 480.0f), colors::red, "Planting");
 	}
 
 	if (bomb.planted && bomb.ticking) {
 		draw_list->AddText(ImVec2(0, menu::height - 480.0f), colors::red, "Planted");
-		draw_list->AddText(ImVec2(0, menu::height - 460.0f), colors::red, "Ticking");
 	}
 
-	if (bomb.cant_be_defused) {
-		draw_list->AddText(ImVec2(0, menu::height - 480.f), colors::red, "Bomb cant be Defused");
+	if (bomb.defusing) {
+		draw_list->AddText(ImVec2(0, menu::height - 460.0f), colors::green, "Defusing");
 	}
 
 	if (bomb.defused) {

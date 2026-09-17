@@ -18,7 +18,10 @@ void hacks::VisualsThread() noexcept {
 					uintptr_t currentController = memory::read<uintptr_t>(listEntry + 0x70 * (i & 0x1FF));
 
 					if (currentController) {
-
+						//bool has_def = memory::read<bool>(currentController + offsets::client_dll::CCSPlayerController::m_bPawnHasDefuser);
+						//
+						//ent.has_defuser = has_def;
+						
 						int pawnHandle = memory::read<int>(currentController + offsets::client_dll::CCSPlayerController::m_hPlayerPawn);
 
 						if (pawnHandle != 0) {
@@ -33,7 +36,7 @@ void hacks::VisualsThread() noexcept {
 								if (currentPawn) {
 									int32_t health = memory::read<int32_t>(currentPawn + offsets::client_dll::C_BaseEntity::m_iHealth);
 									if (health <= 0 || health >= 1337) continue;
-
+									
 									esp_entity ent{};
 
 									ent.health = health;
@@ -50,6 +53,8 @@ void hacks::VisualsThread() noexcept {
 										if (boneMatrix) {
 											for (int b = 0; b < 28; ++b) {
 												ent.bones[b] = memory::read<Vec3>(boneMatrix + b * 32);
+
+												std::cout << "Bone " << b << ": (" << ent.bones[b].x << ", " << ent.bones[b].y << ", " << ent.bones[b].z << ")" << std::endl;
 
 												ent.boneValid[b] = false;
 												ent.boneScreen[b] = ImVec2(0.0f, 0.0f);
@@ -80,23 +85,25 @@ void hacks::VisualsThread() noexcept {
 
 			if (weapon_c4) {
 				bool arming = memory::read<bool>(weapon_c4 + offsets::client_dll::C_C4::m_bStartedArming);
-				bool planted = memory::read<bool>(weapon_c4 + offsets::client_dll::C_C4::m_bBombPlanted);
+				bool planted = memory::read<bool>(weapon_c4_ptr + offsets::client_dll::C_C4::m_bBombPlanted);
 
 				ent.arming = arming;
 				ent.planted = planted;
 			}
 
 			if (planted_c4) {
-				bool ticking = memory::read<bool>(planted_c4 + offsets::client_dll::C_PlantedC4::m_bBombTicking);
-				int32_t site = memory::read<int32_t>(planted_c4 + offsets::client_dll::C_PlantedC4::m_nBombSite);
-				bool exploded = memory::read<bool>(planted_c4 + offsets::client_dll::C_PlantedC4::m_bHasExploded);
-				bool defused = memory::read<bool>(planted_c4 + offsets::client_dll::C_PlantedC4::m_bBombDefused);
-				float timer_length = memory::read<float>(planted_c4 + offsets::client_dll::C_PlantedC4::m_flTimerLength);
-
+				bool ticking = memory::read<bool>(planted_c4_ptr + offsets::client_dll::C_PlantedC4::m_bBombTicking);
+				bool defusing = memory::read<bool>(planted_c4_ptr + offsets::client_dll::C_PlantedC4::m_bBeingDefused);
+				bool defused = memory::read<bool>(planted_c4_ptr + offsets::client_dll::C_PlantedC4::m_bBombDefused);
+				bool exploded = memory::read<bool>(planted_c4_ptr + offsets::client_dll::C_PlantedC4::m_bHasExploded);
+				INT32 site = memory::read<INT32>(planted_c4_ptr + offsets::client_dll::C_PlantedC4::m_nBombSite);
+				float timer_length = memory::read<float>(planted_c4_ptr + offsets::client_dll::C_PlantedC4::m_flTimerLength);
+				
 				ent.ticking = ticking;
-				ent.site = site;
-				ent.exploded = exploded;
+				ent.defusing = defusing;
 				ent.defused = defused;
+				ent.exploded = exploded;
+				ent.site = site;
 				ent.timer_length = timer_length;
 			}
 

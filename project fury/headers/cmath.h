@@ -108,6 +108,7 @@ typedef struct esp_entity {
 
     ImVec2 boneScreen[28];
     bool boneValid[28];
+	bool has_defuser;
 } esp_entity;
 
 typedef struct bomb_entity {
@@ -117,7 +118,7 @@ typedef struct bomb_entity {
     
     int32_t site;
 
-    bool cant_be_defused;
+    bool defusing;
     bool exploded;
     bool defused;
 

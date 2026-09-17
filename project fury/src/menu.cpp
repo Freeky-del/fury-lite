@@ -441,12 +441,12 @@ void menu::EndRender() noexcept {
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-	swap_chain->Present(1U, 0U); // vsync ON
+	swap_chain->Present(0U, 0U); // vsync OFF
 }
 
 void menu::Render() noexcept {
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
-	draw_list->AddText(ImVec2(0, 0), ImU32(ImColor(145, 0, 0, 255)), "Fury Lite - v2.0.1");
+	draw_list->AddText(ImVec2(0, 0), ImU32(ImColor(145, 0, 0, 255)), "Fury Lite - v3.0.0");
 
 	ImVec2 bottom_left_screen(0, menu::height - 300.0f);
 	ImColor outline = ImColor(1, 0, 0, 255);
