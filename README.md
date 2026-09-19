@@ -2,8 +2,8 @@
 > This project is for educational purposes only, I do not agree with the use of cheats or third-party software to gain an unfair advantage in games. I am not responsible for any bans that may be received.
 
 > [!Caution]
-> Make sure tu restart your pc after you finished the usage of _**Fury Lite**_ so that the driver can be unload by your system.
-> P.S. If you do not unload the driver/restart your pc and go to play an another game with a stronger anticheat you can be easly ban.
+> Make sure to restart your pc after you finished the usage of _**Fury Lite**_ so the driver can be unload from your system.
+> P.S. If you do not unload the driver/restart your pc and go to play an another game with a stronger anticheat you may can be easly ban.
 
 # Featuers
 1. Visuals
