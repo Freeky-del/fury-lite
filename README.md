@@ -3,7 +3,7 @@
 
 > [!Caution]
 > Make sure to restart your pc after you finished the usage of _**Fury Lite**_ so the driver can be unload from your system.
-> P.S. If you do not unload the driver/restart your pc and go to play an another game with a stronger anticheat you may can be easly ban.
+> P.S. If you do not unload the driver/restart your pc and go to play another game with a stronger anticheat you may can be easly banned.
 
 # Featuers
 1. Visuals
